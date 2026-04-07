@@ -1,799 +1,713 @@
 ---
 name: one-stop-development
-description: 一站式前端开发助手，根据具体项目自动分析并规划开发步骤。支持环境搭建、技术文档生成、需求分析、前后端分工等一站式服务。根据项目实际情况智能推荐开发流程，避免过度规划，快速启动开发。当用户提到"一站式开发"、"快速启动项目"、"帮我开始开发"、"项目开发流程"、"开发步骤"、"项目初始化"、"从零开始开发"时使用此 skill。
+description: 一站式前端开发助手，按固定流程执行：需求拆分 → 技术文档生成 → 环境配置 → 开发实施。通过 requirement-splitter 分析需求并拆分前后端任务，使用 frontend-tech-doc-generator 生成技术文档，使用 frontend-env-installer 配置环境，开发时优先遵循项目 eslint 配置或书写规范。当用户提到"一站式开发"、"快速启动项目"、"帮我开始开发"、"项目开发流程"、"开发步骤"、"从零开始开发"时使用此 skill。
 ---
 
 # 一站式前端开发 Skill
 
 ## 概述
 
-本 Skill 提供前端项目的一站式开发引导，根据具体项目需求自动分析并规划精简的开发步骤。通过智能识别项目类型、规模和复杂度，避免过度规划，帮助开发者快速进入开发状态。
+本 Skill 提供前端项目的一站式开发引导，按照固定的四步流程执行：需求拆分 → 技术文档生成 → 环境配置 → 开发实施。确保每个环节都有明确的输出和确认，规范开发流程。
 
-**核心特点**：
-- 🎯 **具体项目具体分析**：根据项目实际情况智能推荐步骤
-- ⚡ **快速启动**：避免过度规划，只做必要准备
-- 🔧 **环境一键配置**：自动检测并配置开发环境
-- 📋 **技术方案精简**：按需生成技术文档，不搞形式主义
-- 🔄 **渐进式开发**：边开发边完善，逐步迭代
+**核心流程**：
+1. 📊 **需求拆分**：使用 requirement-splitter 分析需求文档，拆分前后端任务
+2. 📝 **技术文档**：使用 frontend-tech-doc-generator 读取需求、接口文档、注意事项，生成技术方案
+3. 🔧 **环境配置**：检查前端环境，必要时使用 frontend-env-installer 安装配置
+4. 💻 **开发实施**：优先遵循项目 eslint 配置，无配置则遵循书写规范.md
 
-## 一、项目智能分析
+## 一、第一步：需求拆分（requirement-splitter）
 
-### 1.1 项目类型识别
+### 1.1 需求分析流程
 
-首先识别项目类型，确定开发重点：
+使用 `requirement-splitter` skill 分析需求文档并拆分前后端任务：
 
 ```javascript
-// 项目类型识别矩阵
-const projectTypes = {
-  // 新项目
-  newProject: {
-    indicators: ['新项目', '从零开始', '新建项目', '空白项目'],
-    steps: ['环境搭建', '项目初始化', '基础配置', '开发启动']
+// 需求拆分流程
+const requirementSplitProcess = {
+  // 输入
+  input: {
+    requirementDoc: '需求文档链接或内容',
+    additionalInfo: '用户提供的额外信息'
   },
   
-  // 现有项目
-  existingProject: {
-    indicators: ['现有项目', '已有代码', '接手项目', '维护项目'],
-    steps: ['环境检查', '依赖安装', '启动项目', '功能开发']
-  },
+  // 处理流程
+  steps: [
+    '1. 读取并解析需求文档内容',
+    '2. 提取核心功能点和业务需求',
+    '3. 识别涉及的页面和模块',
+    '4. 分析前后端职责边界',
+    '5. 拆分前端任务清单',
+    '6. 拆分后端任务清单',
+    '7. 明确联调依赖关系'
+  ],
   
-  // 需求驱动
-  requirementDriven: {
-    indicators: ['需求文档', 'PRD', '功能需求', '产品文档'],
-    steps: ['需求分析', '技术选型', '环境搭建', '开发实施']
-  },
-  
-  // 快速原型
-  prototype: {
-    indicators: ['原型', 'Demo', '演示', '快速验证'],
-    steps: ['环境搭建', '脚手架生成', '快速实现']
+  // 输出
+  output: {
+    frontendTasks: '前端任务列表（页面、组件、功能）',
+    backendTasks: '后端任务列表（接口、数据库、服务）',
+    dependencies: '前后端依赖关系图',
+    timeline: '建议的开发排期'
   }
 };
 ```
 
-### 1.2 项目规模评估
+### 1.2 调用示例
 
-根据项目规模调整步骤深度：
+```markdown
+**步骤 1：启动需求拆分**
+
+使用 requirement-splitter 分析需求：
+
+示例命令：
+```bash
+# 假设 requirement-splitter 提供 CLI 或 API
+requirement-splitter analyze \
+  --doc "需求文档链接" \
+  --output "task-breakdown.md"
+```
+
+**预期输出**：
+- ✅ 前端任务清单（包含页面、组件、路由、状态管理等）
+- ✅ 后端任务清单（包含接口、数据模型、业务逻辑等）
+- ✅ 前后端联调点
+- ✅ 建议的开发优先级
+```
+
+### 1.3 前后端任务拆分模板
+
+```markdown
+## 前后端任务拆分表
+
+### 前端任务
+| 序号 | 任务类型 | 任务描述 | 优先级 | 预计工时 | 依赖后端 |
+|-----|---------|---------|--------|---------|---------|
+| 1 | 页面 | 登录页面开发 | P0 | 2d | 登录接口 |
+| 2 | 组件 | 表单组件封装 | P0 | 1d | - |
+| 3 | 功能 | 用户认证逻辑 | P0 | 1d | 认证接口 |
+
+### 后端任务
+| 序号 | 任务类型 | 任务描述 | 优先级 | 预计工时 | 前端依赖 |
+|-----|---------|---------|--------|---------|---------|
+| 1 | 接口 | 登录接口开发 | P0 | 1d | - |
+| 2 | 接口 | 用户信息接口 | P0 | 0.5d | - |
+| 3 | 数据库 | 用户表设计 | P0 | 0.5d | - |
+
+### 联调计划
+| 功能模块 | 前端完成时间 | 后端完成时间 | 联调时间 |
+|---------|------------|------------|---------|
+| 登录模块 | Day 2 | Day 1 | Day 3 |
+```
+
+## 二、第二步：技术文档生成（frontend-tech-doc-generator）
+
+### 2.1 技术文档生成流程
+
+使用 `frontend-tech-doc-generator` skill 生成技术方案，此步骤包含关键的疑问确认环节：
 
 ```javascript
-// 项目规模评估
-const projectScale = {
-  small: {
-    indicators: ['个人项目', '小工具', '简单页面', '单一功能'],
-    techDoc: '简化版',  // 不生成详细技术文档
-    steps: ['快速搭建', '直接开发']
+// 技术文档生成流程
+const techDocGenerationProcess = {
+  // 输入源
+  inputs: {
+    requirementDoc: '需求文档（来自第一步）',
+    apiDoc: '接口文档（如果已有）',
+    userNotes: '用户提供的注意事项'
   },
   
-  medium: {
-    indicators: ['团队项目', '中型应用', '多个模块'],
-    techDoc: '标准版',  // 生成标准技术文档
-    steps: ['环境配置', '基础架构', '模块开发']
-  },
+  // 核心流程（重要！）
+  steps: [
+    '1. 读取需求文档内容',
+    '2. 读取接口文档（如有）',
+    '3. 读取用户提供的注意事项',
+    '4. 分析并提取疑问点',
+    '5. ⚠️ 抛出疑问等待用户确认',
+    '6. 记录用户回答',
+    '7. 📋 读取项目信息及项目结构',
+    '8. 生成技术文档'
+  ],
   
-  large: {
-    indicators: ['企业级', '大型系统', '多人协作', '长期维护'],
-    techDoc: '完整版',  // 生成完整技术文档
-    steps: ['完整规划', '架构设计', '团队协作', '迭代开发']
+  // 输出
+  output: {
+    techDoc: '技术方案文档',
+    qAndA: '疑问点及回答记录'
   }
 };
 ```
 
-### 1.3 决策树
+### 2.2 疑问确认机制（核心环节）
 
-```
-用户发起请求
-    │
-    ├─ 是否有需求文档？
-    │   ├─ 是 → 读取文档 → 分析需求 → 推荐步骤
-    │   └─ 否 → 询问项目类型 → 进入下一步
-    │
-    ├─ 是否是新项目？
-    │   ├─ 是 → 环境检测 → 环境搭建 → 项目初始化
-    │   └─ 否 → 环境检测 → 依赖安装 → 启动项目
-    │
-    └─ 项目规模？
-        ├─ 小型 → 快速流程（3步内）
-        ├─ 中型 → 标准流程（5-8步）
-        └─ 大型 → 完整流程（详细规划）
+**重要：在生成技术文档前必须执行疑问确认**
+
+```markdown
+#### 疑问抛出格式
+
+完成文档阅读后，必须以以下格式抛出疑问：
+
+**🔍 需求确认问题**
+
+Q1: [第一个疑问点]
+Q2: [第二个疑问点]
+Q3: [第三个疑问点]
+...
+
+**等待用户回复后，记录回答：**
+
+A1: [用户对 Q1 的回答]
+A2: [用户对 Q2 的回答]
+A3: [用户对 Q3 的回答]
+...
 ```
 
-## 二、开发步骤规划
+### 2.3 项目信息读取
+
+**生成技术文档前必须优先读取项目信息及结构：**
+
+```bash
+# 项目信息读取清单
+项目信息读取步骤：
+1. 读取 package.json（依赖、脚本、项目配置）
+2. 读取项目目录结构（了解代码组织）
+3. 读取配置文件（.env, vite.config.js, webpack.config.js 等）
+4. 读取现有代码规范（.eslintrc, .prettierrc 等）
+5. 读取 README.md（项目说明）
+
+这些信息将用于：
+- 确定技术栈和依赖版本
+- 了解项目架构模式
+- 遵循现有代码规范
+- 保持技术方案的一致性
+```
+
+### 2.4 执行示例
+
+```markdown
+**步骤 2：生成技术文档**
+
+#### 2.1 读取文档
+```
+使用 frontend-tech-doc-generator 执行：
+- ✅ 读取需求文档：[需求文档链接]
+- ✅ 读取接口文档：[接口文档链接]
+- ✅ 读取注意事项：[用户提供的注意事项]
+```
+
+#### 2.2 抛出疑问（必做环节）
+```
+🔍 需求确认问题
+
+Q1: 登录页面是否需要支持第三方登录（微信、支付宝）？
+Q2: 列表页是否需要支持导出功能？导出格式是什么？
+Q3: 数据权限是按角色控制还是按部门控制？
+Q4: 是否需要支持离线访问？
+
+请回复以上问题，我将根据您的回答生成技术方案。
+```
+
+#### 2.3 用户回复示例
+```
+A1: 暂时只支持账号密码登录，第三方登录后续迭代
+A2: 需要导出，支持 Excel 和 PDF 两种格式
+A3: 按角色控制权限
+A4: 不需要离线访问
+```
+
+#### 2.4 记录回答并读取项目信息
+```
+已记录您的回答，正在读取项目信息：
+- 📄 读取 package.json
+- 📁 读取项目目录结构
+- ⚙️ 读取配置文件
+- 📝 读取代码规范
+```
+
+#### 2.5 生成技术文档
+```
+基于以上信息生成技术方案文档：
+- ✅ 技术选型
+- ✅ 架构设计
+- ✅ 页面清单
+- ✅ 接口设计
+- ✅ 开发计划
+```
+```
+
+### 2.5 技术文档模板
+
+```markdown
+# [项目名称] 技术方案
+
+## 一、项目概况
+- 项目背景：[基于需求文档]
+- 核心功能：[功能列表]
+- 技术栈：[基于项目现有技术栈]
+
+## 二、需求确认记录
+| 问题 | 回答 | 影响范围 |
+|-----|------|---------|
+| Q1 | A1 | 登录模块 |
+| Q2 | A2 | 列表模块 |
+| Q3 | A3 | 权限系统 |
+
+## 三、技术选型
+[基于项目现有技术栈和新增需求确定]
+
+## 四、页面清单
+[从需求拆分结果转化]
+
+## 五、接口设计
+[结合接口文档和疑问确认结果]
+
+## 六、开发计划
+[基于任务拆分和优先级]
+```
 
 ### 2.1 最小可行步骤（MVP）
 
-针对不同场景的最小步骤集合：
+此部分内容已整合到第二步的执行示例中。
 
-#### 场景一：新项目快速启动
+## 三、第三步：环境配置（frontend-env-installer）
 
-```bash
-# 步骤 1: 环境检测（自动化）
-检测 Node.js → 检测包管理器 → 检测构建工具
+### 3.1 环境检查流程
 
-# 步骤 2: 项目创建
-npm create vite@latest my-project -- --template react-ts
-
-# 步骤 3: 基础配置
-cd my-project && npm install
-
-# 步骤 4: 启动开发
-npm run dev
-```
-
-#### 场景二：需求驱动开发
-
-```bash
-# 步骤 1: 需求分析
-读取需求文档 → 提取功能点 → 识别页面
-
-# 步骤 2: 技术选型
-根据需求特征 → 推荐技术栈 → 确认选型
-
-# 步骤 3: 环境搭建
-检测环境 → 安装缺失 → 配置镜像
-
-# 步骤 4: 项目初始化
-创建项目 → 安装依赖 → 基础配置
-
-# 步骤 5: 开始开发
-实现首页 → 联调接口 → 迭代完善
-```
-
-#### 场景三：现有项目接手
-
-```bash
-# 步骤 1: 环境检查
-检测本地环境 → 对比项目要求
-
-# 步骤 2: 依赖安装
-npm install / yarn / pnpm install
-
-# 步骤 3: 项目启动
-npm run dev / yarn dev
-
-# 步骤 4: 了解项目
-查看目录结构 → 阅读文档 → 理解架构
-```
-
-### 2.2 可选步骤库
-
-根据项目需要选择性添加：
+在进入开发阶段前，必须检查前端环境及配置：
 
 ```javascript
-// 可选步骤库
-const optionalSteps = {
-  // 技术文档类
-  techDoc: {
-    when: '中型以上项目 或 团队协作',
-    action: '生成技术文档',
-    detail: '技术选型、架构设计、接口规范'
-  },
+// 环境检查流程
+const environmentCheckProcess = {
+  // 检查项目
+  checks: [
+    'Node.js 版本是否符合项目要求',
+    '包管理器是否存在（npm/yarn/pnpm）',
+    '项目依赖是否已安装',
+    '项目配置文件是否完整',
+    '构建工具是否可用'
+  ],
   
-  // 需求分析类
-  requirementAnalysis: {
-    when: '有需求文档',
-    action: '分析需求文档',
-    detail: '提取功能点、识别页面、规划模块'
-  },
-  
-  // 前后端分工
-  frontendBackendSplit: {
-    when: '前后端分离项目',
-    action: '生成分工表',
-    detail: '明确前端职责、后端接口、联调计划'
-  },
-  
-  // 代码规范
-  codeStandard: {
-    when: '团队项目',
-    action: '配置代码规范',
-    detail: 'ESLint、Prettier、Git Hooks'
-  },
-  
-  // Mock 数据
-  mockData: {
-    when: '后端接口未就绪',
-    action: '生成 Mock 数据',
-    detail: '接口 Mock、数据结构定义'
+  // 判断逻辑
+  decision: {
+    allPassed: '直接进入开发阶段',
+    missingEnv: '调用 frontend-env-installer 安装配置环境',
+    missingDeps: '安装项目依赖'
   }
 };
 ```
 
-## 三、环境智能配置
-
-### 3.1 自动检测脚本
+### 3.2 环境检查脚本
 
 ```bash
 #!/bin/bash
-# 环境自动检测脚本
+# 前端环境检查脚本
 
-echo "🔍 检测开发环境..."
+echo "🔍 检查前端开发环境..."
 
-# 检测 Node.js
+# 1. 检查 Node.js
+echo "检查 Node.js..."
 if command -v node &> /dev/null; then
     NODE_VERSION=$(node --version)
-    echo "✅ Node.js: $NODE_VERSION"
+    echo "✅ Node.js 已安装: $NODE_VERSION"
+    
+    # 检查版本是否符合项目要求
+    if [ -f "package.json" ]; then
+        REQUIRED_VERSION=$(grep -o '"node": "[^"]*"' package.json | grep -o '[0-9.]*')
+        if [ ! -z "$REQUIRED_VERSION" ]; then
+            echo "   项目要求版本: $REQUIRED_VERSION"
+        fi
+    fi
 else
     echo "❌ Node.js 未安装"
-    echo "💡 建议: brew install node (macOS)"
+    echo "💡 需要调用 frontend-env-installer 安装 Node.js"
+    exit 1
 fi
 
-# 检测包管理器
-if command -v npm &> /dev/null; then
-    echo "✅ npm: $(npm --version)"
-fi
-if command -v yarn &> /dev/null; then
-    echo "✅ yarn: $(yarn --version)"
-fi
-if command -v pnpm &> /dev/null; then
-    echo "✅ pnpm: $(pnpm --version)"
-fi
-
-# 检测构建工具
-if command -v vite &> /dev/null; then
-    echo "✅ Vite 已安装"
-fi
-if command -v webpack &> /dev/null; then
-    echo "✅ Webpack 已安装"
+# 2. 检查包管理器
+echo "检查包管理器..."
+if [ -f "package-lock.json" ]; then
+    echo "✅ 检测到 npm 项目"
+    PKG_MANAGER="npm"
+elif [ -f "yarn.lock" ]; then
+    echo "✅ 检测到 yarn 项目"
+    PKG_MANAGER="yarn"
+elif [ -f "pnpm-lock.yaml" ]; then
+    echo "✅ 检测到 pnpm 项目"
+    PKG_MANAGER="pnpm"
+else
+    echo "⚠️ 未检测到 lock 文件，默认使用 npm"
+    PKG_MANAGER="npm"
 fi
 
-# 检测 Git
-if command -v git &> /dev/null; then
-    echo "✅ Git: $(git --version)"
+# 3. 检查依赖安装
+echo "检查项目依赖..."
+if [ ! -d "node_modules" ]; then
+    echo "❌ 依赖未安装"
+    echo "💡 执行: $PKG_MANAGER install"
+else
+    echo "✅ 依赖已安装"
 fi
 
 echo ""
-echo "📊 环境检测结果完成"
+echo "📊 环境检查完成"
 ```
 
-### 3.2 智能安装策略
+### 3.3 使用 frontend-env-installer
+
+**如果环境检查不通过，调用 frontend-env-installer：**
+
+```markdown
+**步骤 3：环境配置**
+
+#### 3.1 环境检查结果
+```
+环境检查结果：
+- ❌ Node.js 未安装 或 版本不匹配
+- ❌ 包管理器未找到
+- ❌ 项目依赖未安装
+```
+
+#### 3.2 调用 frontend-env-installer
+```
+使用 frontend-env-installer 自动安装配置环境：
+
+示例命令：
+```bash
+frontend-env-installer install \
+  --node-version "18.x" \
+  --pkg-manager "pnpm" \
+  --install-deps
+```
+
+#### 3.3 安装完成后重新检查
+```
+✅ Node.js 18.x 已安装
+✅ pnpm 已配置
+✅ 项目依赖已安装
+✅ 环境配置完成，可以开始开发
+```
+```
+
+### 3.4 常见环境问题处理
+
+```markdown
+#### 问题 1：Node.js 版本不匹配
+```
+解决方案：
+- 使用 nvm 切换版本：nvm use 18
+- 或使用 frontend-env-installer 自动安装正确版本
+```
+
+#### 问题 2：包管理器冲突
+```
+解决方案：
+- 删除现有 lock 文件
+- 统一使用项目指定的包管理器
+- 重新安装依赖
+```
+
+#### 问题 3：依赖安装失败
+```
+解决方案：
+- 检查网络连接
+- 配置 npm 镜像源：npm config set registry https://registry.npmmirror.com
+- 清除缓存后重试：npm cache clean --force
+```
+```
+
+## 四、第四步：开发实施
+
+### 4.1 开发规范优先级
+
+**开发时遵循以下优先级规范：**
 
 ```javascript
-// 根据项目类型智能安装
-const installStrategy = {
-  // React 项目
-  react: {
-    global: ['create-vite', 'typescript'],
-    dev: ['@types/react', '@types/react-dom', 'eslint', 'prettier']
+// 开发规范优先级
+const codeStandardPriority = {
+  // 最高优先级：项目现有配置
+  level1: {
+    source: '项目 .eslintrc 配置',
+    usage: '必须遵循项目的 eslint 配置',
+    check: '检查 .eslintrc, .eslintrc.js, .eslintrc.json'
   },
   
-  // Vue 项目
-  vue: {
-    global: ['create-vue', 'typescript'],
-    dev: ['vue-tsc', 'eslint', 'prettier']
+  // 次级优先级：书写规范
+  level2: {
+    source: '书写规范.md',
+    usage: '项目无 eslint 配置时遵循',
+    location: '技能目录下的书写规范.md'
   },
   
-  // Node.js 项目
-  node: {
-    global: ['nodemon', 'ts-node', 'typescript'],
-    dev: ['@types/node', 'eslint', 'prettier']
+  // 最低优先级：通用规范
+  level3: {
+    source: '通用开发规范',
+    usage: '以上都不存在时使用通用规范'
   }
 };
 ```
 
-### 3.3 镜像源配置
+### 4.2 规范检查流程
 
 ```bash
-# 国内环境自动配置镜像
-if [[ $(curl -s --connect-timeout 5 https://registry.npmjs.org) != *"registry"* ]]; then
-    echo "检测到网络问题，自动配置淘宝镜像..."
-    npm config set registry https://registry.npmmirror.com
+# 开发规范检查流程
+
+步骤 1: 检查项目 ESLint 配置
+```
+if [ -f ".eslintrc" ] || [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ]; then
+    echo "✅ 检测到项目 ESLint 配置"
+    echo "📋 开发时遵循项目的 eslint 配置"
+    # 读取并展示主要规则
+else
+    echo "⚠️ 未检测到项目 ESLint 配置"
+    echo "📋 将遵循书写规范.md 进行开发"
 fi
 ```
 
-## 四、技术文档精简生成
-
-### 4.1 按需生成策略
-
-```javascript
-// 技术文档生成策略
-const docGenerationStrategy = {
-  // 小型项目：不生成
-  small: {
-    generate: false,
-    reason: '小型项目直接开发即可，无需过度规划'
-  },
-  
-  // 中型项目：精简版
-  medium: {
-    generate: true,
-    sections: ['技术选型', '页面清单', '接口设计', '开发计划'],
-    skip: ['架构图', '组件详细设计', '性能优化方案', '测试方案']
-  },
-  
-  // 大型项目：完整版
-  large: {
-    generate: true,
-    sections: 'all',  // 所有章节
-    detail: 'high'    // 高详细度
-  }
-};
+步骤 2: 读取书写规范（如果需要）
+```
+书写规范.md 主要内容包括：
+- 代码格式化规范
+- 命名约定
+- 组件开发规范
+- 注释规范
+- Git 提交规范
+等...
+```
 ```
 
-### 4.2 精简版技术文档模板
+### 4.3 开发执行流程
 
 ```markdown
-# [项目名称] 技术方案（精简版）
+**步骤 4：开始开发**
 
-## 一、技术选型
-
-| 技术 | 版本 | 用途 |
-|-----|------|------|
-| React/Vue | 18/3 | 前端框架 |
-| TypeScript | 5.x | 类型支持 |
-| Vite | 5.x | 构建工具 |
-| Axios | 1.x | HTTP 请求 |
-
-## 二、页面清单
-
-| 页面 | 路由 | 主要功能 |
-|-----|------|---------|
-| 首页 | / | 数据概览 |
-| 列表页 | /list | 数据展示 |
-
-## 三、接口规划
-
-| 功能 | 方法 | 路径 | 说明 |
-|-----|------|------|------|
-| 获取列表 | GET | /api/list | 分页查询 |
-
-## 四、开发计划
-
-- Week 1: 基础框架搭建
-- Week 2: 核心功能开发
-- Week 3: 测试与优化
+#### 4.1 确定开发规范
+```
+检查项目规范配置：
+- ✅ 发现 .eslintrc.json
+- 📋 将严格遵循项目的 eslint 配置进行开发
+- 📖 主要规则：
+  - 缩进：2 spaces
+  - 引号：single quotes
+  - 分号：required
+  - ...
 ```
 
-## 五、需求快速分析
+#### 4.2 开始编码
+```
+基于技术文档和任务拆分，开始开发：
 
-### 5.1 需求提取流程
+优先级 P0 任务：
+1. [进行中] 搭建项目基础结构
+2. [待开始] 实现登录模块
+3. [待开始] 开发主页面布局
 
-```python
-# 需求快速分析
-def quick_analysis(requirement_content):
-    """快速提取需求关键信息"""
-    
-    result = {
-        'project_name': extract_project_name(requirement_content),
-        'features': extract_features(requirement_content),
-        'pages': extract_pages(requirement_content),
-        'api_list': extract_api_requirements(requirement_content),
-        'tech_requirements': extract_tech_requirements(requirement_content)
-    }
-    
-    return result
-
-# 功能点提取
-def extract_features(content):
-    """提取核心功能点"""
-    features = []
-    # 关键词匹配
-    keywords = ['功能', '需求', '支持', '实现', '提供']
-    # ... 提取逻辑
-    return features
-
-# 页面识别
-def extract_pages(content):
-    """识别需要的页面"""
-    pages = []
-    # 识别页面关键词
-    page_keywords = ['页面', '界面', '列表', '详情', '表单']
-    # ... 识别逻辑
-    return pages
+开发过程中：
+- 遵循 eslint 配置规范
+- 保持代码风格一致
+- 及时提交代码
+- 编写必要注释
 ```
 
-### 5.2 前后端分工（可选）
+#### 4.3 代码规范验证
+```
+开发过程中持续验证：
+- ✅ 运行 eslint 检查
+- ✅ 运行 prettier 格式化
+- ✅ 执行 git commit 前检查
+```
+```
 
-仅当前后端分离项目需要时生成：
+### 4.4 开发最佳实践
 
 ```markdown
-## 前后端分工表
+#### 代码编写规范
+```
+1. 命名规范
+   - 组件名：PascalCase（如 UserProfile）
+   - 函数名：camelCase（如 getUserInfo）
+   - 常量：UPPER_SNAKE_CASE（如 API_BASE_URL）
+   - 文件名：kebab-case（如 user-profile.tsx）
 
-### 前端负责
-- [ ] 页面开发与布局
-- [ ] 组件开发
-- [ ] 前端路由
-- [ ] 状态管理
-- [ ] 接口联调
+2. 注释规范
+   - 复杂逻辑必须添加注释
+   - 函数必须添加 JSDoc 注释
+   - 组件必须添加功能说明
 
-### 后端负责
-- [ ] 接口开发
-- [ ] 数据库设计
-- [ ] 业务逻辑实现
-- [ ] 接口文档提供
-
-### 联调计划
-| 功能 | 前端完成 | 后端完成 | 联调时间 |
-|-----|---------|---------|---------|
-| 登录 | Day 1 | Day 1 | Day 2 |
-| 列表 | Day 2 | Day 2 | Day 3 |
+3. 代码组织
+   - 组件单一职责
+   - 逻辑与 UI 分离
+   - 公共代码抽取复用
 ```
 
-## 六、开发流程模板
+#### Git 提交规范
+```
+提交信息格式：
+<type>(<scope>): <subject>
 
-### 6.1 敏捷开发流程
+type 类型：
+- feat: 新功能
+- fix: 修复 bug
+- docs: 文档更新
+- style: 代码格式调整
+- refactor: 重构
+- test: 测试相关
+- chore: 构建/工具相关
 
-```javascript
-// 敏捷开发流程
-const agileProcess = {
-  // Sprint 1: 基础搭建
-  sprint1: {
-    duration: '1-2天',
-    tasks: [
-      '项目初始化',
-      '基础配置',
-      '路由搭建',
-      '布局组件'
-    ]
-  },
-  
-  // Sprint 2: 核心功能
-  sprint2: {
-    duration: '3-5天',
-    tasks: [
-      '核心页面开发',
-      '核心组件封装',
-      '接口对接',
-      '数据联调'
-    ]
-  },
-  
-  // Sprint 3: 完善优化
-  sprint3: {
-    duration: '2-3天',
-    tasks: [
-      '边缘场景处理',
-      '性能优化',
-      'Bug 修复',
-      '代码审查'
-    ]
-  }
-};
+示例：
+feat(login): 添加第三方登录功能
+fix(user): 修复用户信息获取失败问题
+```
 ```
 
-### 6.2 快速原型流程
+## 五、完整流程示例
 
-```javascript
-// 快速原型流程
-const prototypeProcess = [
-  {
-    step: 1,
-    action: '选择脚手架',
-    command: 'npm create vite@latest',
-    duration: '1分钟'
-  },
-  {
-    step: 2,
-    action: '安装依赖',
-    command: 'npm install',
-    duration: '2分钟'
-  },
-  {
-    step: 3,
-    action: '启动项目',
-    command: 'npm run dev',
-    duration: '即刻'
-  },
-  {
-    step: 4,
-    action: '快速实现',
-    tips: '先实现核心功能，不追求完美',
-    duration: '按需'
-  }
-];
+### 5.1 从需求到开发的完整示例
+
+```markdown
+**项目：企业管理系统后台**
+
+#### 第一步：需求拆分
+```
+输入：需求文档链接
+输出：
+- 前端任务：15 个页面，20 个组件
+- 后端任务：25 个接口
+- 联调点：登录、权限、数据交互
+- 预计工期：3 周
 ```
 
-## 七、执行流程
-
-### Step 1: 项目诊断
-
-与用户交互，了解项目情况：
-
+#### 第二步：技术文档生成
 ```
-询问模板：
-1. 这是一个什么类型的项目？（新项目/现有项目/需求驱动/原型验证）
-2. 项目规模大概多大？（个人/小团队/企业级）
-3. 有需求文档吗？（有/没有/简要需求）
-4. 有技术栈偏好吗？（React/Vue/其他）
-5. 预期什么时候开始编码？（立刻/先规划一下）
-```
+1. 读取文档
+   - ✅ 需求文档
+   - ✅ 接口文档
+   - ✅ 注意事项：需要兼容 IE11
 
-### Step 2: 生成开发步骤
+2. 抛出疑问
+   Q1: IE11 兼容性要求具体到哪些功能？
+   Q2: 权限系统是否需要动态路由？
+   Q3: 是否需要国际化支持？
 
-根据诊断结果生成最小可行步骤：
+3. 用户回复
+   A1: 核心功能需兼容 IE11，次要功能可降级
+   A2: 需要动态路由，权限由后端返回
+   A3: 暂不需要国际化
 
-```javascript
-function generateSteps(diagnosis) {
-  let steps = [];
-  
-  // 1. 基础步骤（必选）
-  steps.push({
-    phase: '环境准备',
-    tasks: ['检测环境', '安装缺失'],
-    auto: true
-  });
-  
-  // 2. 项目步骤（根据类型）
-  if (diagnosis.type === 'new') {
-    steps.push({
-      phase: '项目初始化',
-      tasks: ['创建项目', '基础配置'],
-      auto: true
-    });
-  } else if (diagnosis.type === 'existing') {
-    steps.push({
-      phase: '项目启动',
-      tasks: ['安装依赖', '启动项目'],
-      auto: true
-    });
-  }
-  
-  // 3. 可选步骤（按需）
-  if (diagnosis.hasRequirement) {
-    steps.push({
-      phase: '需求分析',
-      tasks: ['提取功能点', '识别页面'],
-      optional: true
-    });
-  }
-  
-  if (diagnosis.scale === 'large') {
-    steps.push({
-      phase: '技术规划',
-      tasks: ['技术选型', '架构设计'],
-      optional: true
-    });
-  }
-  
-  // 4. 开发步骤
-  steps.push({
-    phase: '开始开发',
-    tasks: ['编码实现'],
-    action: '可以开始写代码了！'
-  });
-  
-  return steps;
-}
+4. 读取项目信息
+   - 📄 package.json → React 18 + TypeScript
+   - 📁 目录结构 → 标准项目结构
+   - ⚙️ 配置文件 → Vite + ESLint
+
+5. 生成技术文档
+   - ✅ 技术方案已生成
+   - ✅ 开发计划已制定
 ```
 
-### Step 3: 执行与反馈
+#### 第三步：环境配置
+```
+检查环境：
+- ✅ Node.js 18.17.0
+- ✅ pnpm 8.6.0
+- ❌ 项目依赖未安装
 
-```javascript
-// 执行步骤
-async function executeSteps(steps) {
-  for (const step of steps) {
-    console.log(`\n📌 ${step.phase}`);
-    
-    if (step.auto) {
-      // 自动执行
-      await executeAutoTasks(step.tasks);
-    } else if (step.optional) {
-      // 询问用户是否需要
-      const confirm = await askUser(`是否执行: ${step.tasks.join(', ')}?`);
-      if (confirm) {
-        await executeTasks(step.tasks);
-      }
-    } else {
-      // 提示用户执行
-      console.log(`💡 建议: ${step.action}`);
-    }
-  }
-}
+安装依赖：
+$ pnpm install
+
+重新检查：
+- ✅ 环境配置完成
 ```
 
-## 八、最佳实践
+#### 第四步：开发实施
+```
+规范检查：
+- ✅ 发现 .eslintrc.json
+- 📋 遵循项目 eslint 配置
 
-### 8.1 避免过度规划
-
-```javascript
-// ❌ 错误：小项目也搞全套规划
-const badExample = {
-  projectSize: 'small',
-  steps: [
-    '详细需求分析',
-    '完整技术文档',
-    '架构设计图',
-    '组件详细设计',
-    '性能优化方案',
-    '安全方案设计',
-    '测试方案设计'
-  ]
-};
-
-// ✅ 正确：按需规划
-const goodExample = {
-  projectSize: 'small',
-  steps: [
-    '环境搭建',
-    '项目创建',
-    '开始开发'
-  ]
-};
+开始开发：
+- Week 1: 基础架构 + 登录模块
+- Week 2: 核心业务模块
+- Week 3: 优化 + 测试
+```
 ```
 
-### 8.2 渐进式完善
+## 六、执行检查清单
 
-```
-开发阶段划分：
+### 6.1 流程完整性检查
 
-阶段1 - 快速启动
-└── 环境搭建 → 项目创建 → 核心功能
+```markdown
+#### ✅ 第一步检查项
+- [ ] 需求文档已读取
+- [ ] 前端任务已拆分
+- [ ] 后端任务已拆分
+- [ ] 联调点已明确
+- [ ] 开发优先级已确定
 
-阶段2 - 迭代优化  
-└── 完善细节 → 优化体验 → 修复Bug
+#### ✅ 第二步检查项
+- [ ] 需求文档已读取
+- [ ] 接口文档已读取（如有）
+- [ ] 注意事项已记录
+- [ ] 疑问已抛出并得到回复
+- [ ] 项目信息已读取
+- [ ] 技术文档已生成
 
-阶段3 - 工程化
-└── 代码规范 → 测试覆盖 → 文档完善
-```
+#### ✅ 第三步检查项
+- [ ] Node.js 版本检查
+- [ ] 包管理器检查
+- [ ] 项目依赖安装检查
+- [ ] 环境配置完成确认
 
-### 8.3 智能推荐原则
-
-```javascript
-// 推荐原则
-const principles = [
-  '最小必要步骤优先',
-  '能自动化就不手动',
-  '先跑起来再优化',
-  '文档按需生成',
-  '不过度设计',
-  '快速反馈迭代'
-];
-```
-
-## 九、示例场景
-
-### 场景一：个人小工具开发
-
-**用户输入**：我想做一个简单的待办事项应用
-
-**智能分析**：
-- 项目类型：新项目
-- 项目规模：小型
-- 需求文档：无
-- 开发目标：快速实现
-
-**推荐步骤**：
-
-```bash
-# 步骤 1: 环境检测（自动）
-✅ Node.js 已安装
-✅ npm 已安装
-
-# 步骤 2: 项目创建
-npm create vite@latest todo-app -- --template react-ts
-cd todo-app
-npm install
-
-# 步骤 3: 启动开发
-npm run dev
-
-# 建议
-💡 小型项目无需技术文档，直接开始开发即可
-💡 建议从核心功能开始：添加任务、显示列表、标记完成
+#### ✅ 第四步检查项
+- [ ] 开发规范已确定
+- [ ] ESLint 配置检查
+- [ ] 书写规范准备（备用）
+- [ ] 开发环境就绪
+- [ ] 可以开始编码
 ```
 
-### 场景二：企业级后台管理系统
+## 七、注意事项
 
-**用户输入**：需要开发一个企业级后台管理系统，有需求文档
+### 7.1 流程强制要求
 
-**智能分析**：
-- 项目类型：需求驱动
-- 项目规模：大型
-- 需求文档：有
-- 开发目标：规范开发
+1. **顺序执行**：四个步骤必须按顺序执行，不可跳过
+2. **疑问确认**：第二步的疑问确认是必做环节，不可跳过
+3. **项目信息读取**：生成技术文档前必须先读取项目信息
+4. **环境检查**：开发前必须确保环境配置完成
+5. **规范优先级**：开发时优先使用项目 eslint 配置
 
-**推荐步骤**：
+### 7.2 异常处理
 
-```bash
-# 步骤 1: 需求分析
-读取需求文档 → 提取功能模块 → 识别页面
+```markdown
+#### 异常情况处理
 
-# 步骤 2: 技术选型
-框架: React 18 + TypeScript
-UI库: Ant Design 5.x
-状态管理: Zustand
-构建工具: Vite 5.x
+1. 需求文档不存在
+   - 解决：询问用户需求，手动创建需求文档
 
-# 步骤 3: 环境搭建
-检测并安装 Node.js
-配置 npm 镜像源
+2. 用户未回复疑问
+   - 解决：等待用户回复，无法跳过此步骤
 
-# 步骤 4: 项目初始化
-创建项目结构
-配置代码规范
-搭建基础架构
+3. 环境安装失败
+   - 解决：提供手动安装指导，或使用备选方案
 
-# 步骤 5: 生成技术文档
-技术选型说明
-架构设计方案
-接口对接规范
-开发计划排期
-
-# 步骤 6: 开始开发
-实现登录模块
-搭建布局框架
-开发业务模块
+4. 项目无 eslint 配置
+   - 解决：使用书写规范.md 作为开发规范
 ```
 
-### 场景三：接手现有项目
+### 7.3 最佳实践建议
 
-**用户输入**：我刚接手一个现有项目，需要开始开发
+```markdown
+1. **需求拆分要细致**
+   - 每个任务颗粒度要合适
+   - 明确前后端边界
+   - 标注依赖关系
 
-**智能分析**：
-- 项目类型：现有项目
-- 项目规模：中型
-- 需求文档：未知
-- 开发目标：快速上手
+2. **疑问确认要充分**
+   - 抛出所有关键疑问
+   - 等待用户完整回复
+   - 记录在技术文档中
 
-**推荐步骤**：
+3. **环境检查要全面**
+   - 不要遗漏任何环境依赖
+   - 确保版本兼容性
+   - 提前准备备选方案
 
-```bash
-# 步骤 1: 环境检查
-检测 Node.js 版本是否符合项目要求
-检测包管理器类型（npm/yarn/pnpm）
-
-# 步骤 2: 安装依赖
-根据项目 lock 文件选择包管理器
-执行依赖安装
-
-# 步骤 3: 启动项目
-运行开发服务器
-查看项目是否正常运行
-
-# 步骤 4: 了解项目
-查看 package.json 了解项目结构
-查看 README 了解项目文档
-查看 src 目录了解代码组织
-
-# 建议
-💡 先让项目跑起来，再开始开发新功能
-💡 了解现有代码风格，保持一致性
-💡 有疑问及时与团队成员沟通
+4. **开发规范要严格**
+   - 优先使用项目现有配置
+   - 保持代码风格一致
+   - 及时修复 lint 错误
 ```
-
-## 十、交互式引导
-
-### 10.1 首次对话模板
-
-```
-你好！我是你的前端开发助手 🚀
-
-为了更好地帮助你开始开发，我需要了解一下项目情况：
-
-1️⃣ 项目类型：
-   - 全新项目
-   - 现有项目
-   - 有需求文档
-
-2️⃣ 项目规模：
-   - 个人/小工具
-   - 团队项目
-   - 企业级项目
-
-3️⃣ 技术偏好：
-   - React
-   - Vue
-   - 无偏好
-
-请告诉我你的选择，我会为你规划最合适的开发步骤！
-```
-
-### 10.2 快速启动模式
-
-```
-如果你想快速开始，直接告诉我：
-
-示例1：我要创建一个 React 项目
-示例2：我有需求文档，帮我规划开发
-示例3：现有项目，帮我启动
-
-我会自动分析并给出最佳步骤！
-```
-
-## 注意事项
-
-1. **避免过度规划**：小项目直接开始，不要花时间做详细规划
-2. **自动化优先**：能自动完成的不要让用户手动操作
-3. **按需生成文档**：文档是为了帮助开发，不是为了文档而文档
-4. **快速迭代**：先让项目跑起来，再逐步完善
-5. **灵活调整**：根据实际情况调整步骤，不僵化执行
-6. **用户导向**：最终目标是帮用户快速开始开发，而不是走完流程
